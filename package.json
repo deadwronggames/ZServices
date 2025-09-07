@@ -1,0 +1,11 @@
+{
+    "name": "com.deadwronggames.zservices",
+    "version": "1.0.0",
+    "displayName": "ZServices",
+    "description": "Copy PF_PersistentGO to project's Resource folder",
+    "unity": "2022.3",
+    "author": {
+        "name": "DeadWrong Games",
+        "url": "hhtps://x.com/DeadWrong_Games"
+    }
+}
