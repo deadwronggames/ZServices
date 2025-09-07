@@ -8,7 +8,9 @@ namespace DeadWrongGames.ZServices
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Execute()
         {
-            Object.DontDestroyOnLoad(Object.Instantiate(Resources.Load("PF_PersistentGO"))); 
+            Object persistentGO = Object.Instantiate(Resources.Load("PF_PersistentGO"));
+            persistentGO.name = "PersistentGO";
+            Object.DontDestroyOnLoad(persistentGO); 
         } 
     }
 }
