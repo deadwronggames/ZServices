@@ -23,6 +23,8 @@ namespace DeadWrongGames.ZServices.EventChannels
                 if (!_eventChannelDict.ContainsKey(eventChannel.name)) _eventChannelDict.Add(eventChannel.name, eventChannel);
                 else $"Duplicate EventChannel: {eventChannel.name}. Duplicate not added.".Log(level: ZMethodsDebug.LogLevel.Warning);
             }
+            
+            ServiceLocator.Register(this);
         }
 
         public void Broadcast<TChannelMarker>() where TChannelMarker : IChannelMarker
