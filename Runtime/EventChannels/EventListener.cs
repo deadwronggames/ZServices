@@ -8,15 +8,17 @@ namespace DeadWrongGames.ZServices.EventChannels
     [Serializable]
     public class EventListener
     {
+        public string ListenerName { get; set; } // just for debugging purposes
+
         [Tooltip("EventChannel to register with.")]
         public EventChannel EventChannel;
 
         [Tooltip("Response to invoke when EventChannel is raised.")]
-        [SerializeField] UnityEvent _response;
+        [SerializeField] UnityEvent<Component, object> _response;
     
-        public void OnEventRaised()
+        public void OnEventRaised(Component sender, object data)
         {
-            _response.Invoke();
+            _response.Invoke(sender, data);
         }
     }
 }

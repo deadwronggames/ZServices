@@ -7,6 +7,12 @@ namespace DeadWrongGames.ZServices.EventChannels
     {
         [SerializeField] List<EventListener> _eventListeners;
         
+        private void Awake()
+        {
+            // assign GO name to listeners, just so that it can be printed for debugging purposes
+            foreach (EventListener eventListener in _eventListeners) eventListener.ListenerName = name;
+        }
+        
         private void OnEnable()
         {
             foreach (EventListener eventListener in _eventListeners)
