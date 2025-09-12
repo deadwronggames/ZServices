@@ -1,0 +1,16 @@
+{
+    "name": "DeadWrongGames.ZServices.Editor",
+    "rootNamespace": "DeadWrongGames.ZServices.Editor",
+    "references": [
+        "GUID:32a8c929e0dac654da1ee9c10f07c20c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

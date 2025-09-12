@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace DeadWrongGames.ZServices.EventChannels
 {
-    public abstract class EventChannel : ScriptableObject
+    // Instances can be created via top bar
+    public class EventChannel : ScriptableObject
     {
         private readonly List<EventListener> _eventListeners = new();
         
