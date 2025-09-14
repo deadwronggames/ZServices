@@ -9,7 +9,7 @@ namespace DeadWrongGames.ZServices.Editor
     {
         [MenuItem("Create/EventChannel")] private static void Create() => CreateScriptableObjectInstance<EventChannel>(Path.Combine(EventService.RESOURCE_FOLDER_PATH, EventService.EVENT_CHANNEL_ASSET_FOLDER_NAME));
         
-        private static void CreateScriptableObjectInstance<T>(string folderPath) where T : ScriptableObject
+        private static T CreateScriptableObjectInstance<T>(string folderPath) where T : ScriptableObject
         {
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
@@ -22,6 +22,8 @@ namespace DeadWrongGames.ZServices.Editor
             AssetDatabase.CreateAsset(instance, fullPath);
             EditorUtility.FocusProjectWindow();
             Selection.activeObject = instance;
+
+            return instance;
         }
     }
 }
