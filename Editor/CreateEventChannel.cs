@@ -7,7 +7,7 @@ namespace DeadWrongGames.ZServices.Editor
 {
     public abstract class CreateEventChannel
     {
-        [MenuItem("Create/EventChannel")] private static void Create() => CreateScriptableObjectInstance<EventChannel>(Path.Combine(EventService.RESOURCE_FOLDER_PATH, EventService.EVENT_CHANNEL_ASSET_FOLDER_NAME));
+        [MenuItem("Create/EventChannel")] private static void Create() => CreateScriptableObjectInstance<EventChannel>(Path.Combine(EventBroadcastService.RESOURCE_FOLDER_PATH, EventBroadcastService.EVENT_CHANNEL_ASSET_FOLDER_NAME));
         
         private static T CreateScriptableObjectInstance<T>(string folderPath) where T : ScriptableObject
         {

@@ -51,7 +51,7 @@ namespace DeadWrongGames.ZServices
         {
             if (TryGet(out DummyMB dummyMB) && dummyMB != null) return dummyMB;
             
-            if (!TryGet(out EventService eventService)) // TODO change later to GameManager, that seems less arbitrary
+            if (!TryGet(out EventBroadcastService eventService)) // TODO change later to GameManager, that seems less arbitrary
             {
                 "Not ready to create MB yet. Returning null.".Log(level: ZMethodsDebug.LogLevel.Warning);
                 return null;

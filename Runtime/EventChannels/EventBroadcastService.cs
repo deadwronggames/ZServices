@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DeadWrongGames.ZServices.EventChannels
 {
-    public class EventService : MonoBehaviour, IService
+    public class EventBroadcastService : MonoBehaviour, IService
     {
         public interface IChannelMarker { }
         
