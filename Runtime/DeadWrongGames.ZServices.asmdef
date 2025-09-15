@@ -2,6 +2,7 @@
     "name": "DeadWrongGames.ZServices",
     "rootNamespace": "DeadWrongGames.ZServices",
     "references": [
+        "GUID:53d1b49d16eca634a955e51347fb3969",
         "GUID:7ffb73347f10fbc42a1fbd565146bc3d"
     ],
     "includePlatforms": [],
