@@ -6,7 +6,7 @@ using UnityEngine;
 namespace DeadWrongGames.ZServices.EventChannels
 {
     // Instances can be created via top bar
-    public class EventChannel : ScriptableObject
+    public class EventChannelSO : ScriptableObject
     {
         [SerializeField] bool _verbose;
         

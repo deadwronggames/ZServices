@@ -11,7 +11,7 @@ namespace DeadWrongGames.ZServices.EventChannels
         public string ListenerName { get; set; } // just for debugging purposes
 
         [Tooltip("EventChannel to register with.")]
-        public EventChannel EventChannel;
+        public EventChannelSO EventChannel;
 
         [Tooltip("Response to invoke when EventChannel is raised.")]
         [SerializeField] UnityEvent<Component, object> _response;

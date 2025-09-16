@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DeadWrongGames.ZServices.Editor
 {
-    [CustomEditor(typeof(EventChannel))]
+    [CustomEditor(typeof(EventChannelSO))]
     public class EventChannelInspectorUI : UnityEditor.Editor
     {
         private int    _intToInvoke;
@@ -15,7 +15,7 @@ namespace DeadWrongGames.ZServices.Editor
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            EventChannel targetComponent = (EventChannel)target;
+            EventChannelSO targetComponent = (EventChannelSO)target;
             
             _intToInvoke = EditorGUILayout.IntField("Int to manually invoke", _intToInvoke);
             _floatToInvoke = EditorGUILayout.FloatField("Float to manually invoke", _floatToInvoke);

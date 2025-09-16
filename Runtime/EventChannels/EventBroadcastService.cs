@@ -11,14 +11,14 @@ namespace DeadWrongGames.ZServices.EventChannels
         public const string RESOURCE_FOLDER_PATH = "Assets/Resources";
         public const string EVENT_CHANNEL_ASSET_FOLDER_NAME = "EventChannels";
         
-        private readonly Dictionary<string, EventChannel> _eventChannelDict = new();
+        private readonly Dictionary<string, EventChannelSO> _eventChannelDict = new();
 
         protected void Awake()
         {
             // find and cache all channels
             foreach (Object obj in Resources.LoadAll(EVENT_CHANNEL_ASSET_FOLDER_NAME))
             {
-                EventChannel eventChannel = obj as EventChannel;
+                EventChannelSO eventChannel = obj as EventChannelSO;
                 if (eventChannel == null) continue;
 
                 if (!_eventChannelDict.ContainsKey(eventChannel.name)) _eventChannelDict.Add(eventChannel.name, eventChannel);

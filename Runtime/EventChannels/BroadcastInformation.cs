@@ -7,7 +7,7 @@ namespace DeadWrongGames.ZServices.EventChannels
     [Serializable]
     public struct BroadcastInformation
     {
-        public EventChannel Channel;
+        public EventChannelSO Channel;
         public Component Sender;
         public BaseReference Data;
     }
