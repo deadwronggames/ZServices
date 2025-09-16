@@ -9,16 +9,16 @@ namespace DeadWrongGames.ZServices.Pooling
 {
     public class PoolingService : MonoBehaviour, IService
     {
-        [SerializeField] BasePoolDefinitionSO[] _pools;
+        [SerializeField] BasePoolDefinitionSO[] _poolDefinitions;
         
         // Pools are referenced by Type of the pool object
         // if e.g. normal bullets and explosive bullets should come from the same pool, the configuration of the bullets needs to be done after they are obtained from the pool
-        private readonly Dictionary<Type, IObjectPool<IPoolable>> _poolDict = new();
+        private readonly Dictionary<Type, IObjectPool<Component>> _poolDict = new();
         
         private void Awake()
         {
-            foreach (BasePoolDefinitionSO pool in _pools)
-                _poolDict.Add(pool.GetPoolType(), pool.InstantiatePool());
+            foreach (BasePoolDefinitionSO poolDefinition in _poolDefinitions)
+                _poolDict.Add(poolDefinition.PoolType, poolDefinition.InstantiatePool());
             
             ServiceLocator.Register(this);
         }
@@ -37,30 +37,36 @@ namespace DeadWrongGames.ZServices.Pooling
         private void ClearPools()
         {
             "Clearing Pools()".Log(level: ZMethodsDebug.LogLevel.Info);
-            foreach (IObjectPool<IPoolable> pool in _poolDict.Values) pool?.Clear();
+            foreach (IObjectPool<Component> pool in _poolDict.Values) pool?.Clear();
         }
 
-        public TPoolable Get<TPoolable>() where TPoolable : IPoolable
+        public Poolable<T> Get<T>() where T : Component
         {
-            if (!_poolDict.TryGetValue(typeof(TPoolable), out IObjectPool<IPoolable> pool))
+            if (!_poolDict.TryGetValue(typeof(T), out IObjectPool<Component> pool))
             {
-                $"No pool was defined for {typeof(TPoolable)}. Make sure to assign a {nameof(BasePoolDefinitionSO)} instance to this Service. Returning default.".Log(level: ZMethodsDebug.LogLevel.Warning);
+                $"No pool was defined for {typeof(T)}. Make sure to assign a {nameof(BasePoolDefinitionSO)} instance to this Service. Returning default.".Log(level: ZMethodsDebug.LogLevel.Warning);
                 return default;
             }
 
-            return (TPoolable)pool.Get();
+            return new Poolable<T>((T)pool.Get(), pool);
         }
-
-        public void Release(IPoolable poolable)
+        
+        public struct Poolable<T> where T : Component
         {
-            if (!_poolDict.TryGetValue(poolable.GetType(), out IObjectPool<IPoolable> pool))
+            public T Component { get; private set; }
+            private readonly IObjectPool<Component> _ownerPool;
+
+            public Poolable(T component, IObjectPool<Component> ownerPool)
             {
-                $"No pool available for {poolable.GetType()}. Destroying object.".Log(level: ZMethodsDebug.LogLevel.Warning);
-                Destroy(poolable.GameObject);
-                return;
+                Component = component;
+                _ownerPool = ownerPool;
             }
 
-            pool.Release(poolable);
+            public void Release()
+            {
+                if (Component != null && Component && _ownerPool != null) _ownerPool.Release(Component);
+                Component = null; // just for safety, e.g. so that component cannot be used further or released again
+            }
         }
     }
 }

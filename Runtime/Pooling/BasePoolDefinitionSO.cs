@@ -9,21 +9,21 @@ namespace DeadWrongGames.ZServices.Pooling
     {
         [SerializeField] protected GameObject _prefab;
         [SerializeField] int _maxPoolSize = -1;
+       
+        // Deriving classes define their Component type in the ComponentFactory override
+        public Type PoolType => ComponentFactory(_prefab).GetType();
+        protected abstract Func<GameObject, Component> ComponentFactory { get; }
 
         private void OnValidate()
         {
-            if (_prefab != null && _prefab.GetComponent<IPoolable>() == null)
-                $"Prefab {_prefab.name} does not have an {nameof(IPoolable)} component.".Log(level: ZMethodsDebug.LogLevel.Warning);
+            Component component = ComponentFactory(_prefab);
+            if (_prefab != null && component == null)
+                $"Prefab {_prefab.name} does not have an {component.GetType()} component.".Log(level: ZMethodsDebug.LogLevel.Warning);
         }
 
-        public Type GetPoolType()
+        public IObjectPool<Component> InstantiatePool()
         {
-            return _prefab.GetComponent<IPoolable>().GetType();
-        }
-
-        public IObjectPool<IPoolable> InstantiatePool()
-        {
-            return new ObjectPool<IPoolable>(
+            return new ObjectPool<Component>(
                 createFunc: CreateFunc,
                 actionOnGet: ActionOnGet,
                 actionOnRelease: ActionOnRelease,
@@ -32,9 +32,26 @@ namespace DeadWrongGames.ZServices.Pooling
             );
         }
 
-        protected abstract IPoolable CreateFunc();
-        protected abstract void ActionOnGet(IPoolable poolable);
-        protected abstract void ActionOnRelease(IPoolable poolable);
-        protected abstract void ActionOnDestroy(IPoolable poolable);
+        protected virtual Component CreateFunc()
+        {
+            Component instance = ComponentFactory(Instantiate(_prefab));
+            instance.gameObject.SetActive(false);
+            return instance;
+        }
+        protected virtual void ActionOnGet(Component poolable)
+        {
+            poolable.gameObject.SetActive(true);
+        }
+
+        protected virtual void ActionOnRelease(Component poolable)
+        {
+            poolable.gameObject.SetActive(false);
+        }
+
+        protected virtual void ActionOnDestroy(Component poolable)
+        {
+            // When pool is cleared or destroyed, all objects in the pool are destroyed as well
+            if (poolable != null) Destroy(poolable.gameObject);
+        }
     }
 }
