@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using DeadWrongGames.ZServices.EventChannels;
 using System.IO;
 using UnityEditor;
@@ -27,3 +28,4 @@ namespace DeadWrongGames.ZServices.Editor
         }
     }
 }
+#endif
