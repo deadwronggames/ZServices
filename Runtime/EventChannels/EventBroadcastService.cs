@@ -6,7 +6,7 @@ namespace DeadWrongGames.ZServices.EventChannels
 {
     public class EventBroadcastService : MonoBehaviour, IService
     {
-        public interface IChannelMarker { }
+        public abstract class ChannelMarker { }
         
         public const string RESOURCE_FOLDER_PATH = "Assets/Resources";
         public const string EVENT_CHANNEL_ASSET_FOLDER_NAME = "EventChannels";
@@ -30,10 +30,10 @@ namespace DeadWrongGames.ZServices.EventChannels
         }
 
         // API with different signatures that can be called by users
-        public void Broadcast<TChannelMarker>() where TChannelMarker : IChannelMarker => Broadcast<TChannelMarker>(null, null);
-        public void Broadcast<TChannelMarker>(object data) where TChannelMarker : IChannelMarker => Broadcast<TChannelMarker>(null, data);
-        public void Broadcast<TChannelMarker>(Component sender) where TChannelMarker : IChannelMarker => Broadcast<TChannelMarker>(sender, null);
-        public void Broadcast<TChannelMarker>(Component sender, object data) where TChannelMarker : IChannelMarker
+        public void Broadcast<TChannelMarker>() where TChannelMarker : ChannelMarker => Broadcast<TChannelMarker>(null, null);
+        public void Broadcast<TChannelMarker>(object data) where TChannelMarker : ChannelMarker => Broadcast<TChannelMarker>(null, data);
+        public void Broadcast<TChannelMarker>(Component sender) where TChannelMarker : ChannelMarker => Broadcast<TChannelMarker>(sender, null);
+        public void Broadcast<TChannelMarker>(Component sender, object data) where TChannelMarker : ChannelMarker
         {
             _eventChannelDict[typeof(TChannelMarker).Name].Invoke(sender, data);
         }
