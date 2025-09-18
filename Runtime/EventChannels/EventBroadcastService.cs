@@ -8,7 +8,6 @@ namespace DeadWrongGames.ZServices.EventChannels
     {
         public abstract class ChannelMarker { }
         
-        public const string RESOURCE_FOLDER_PATH = "Assets/Resources";
         public const string EVENT_CHANNEL_ASSET_FOLDER_NAME = "EventChannels";
         
         private readonly Dictionary<string, EventChannelSO> _eventChannelDict = new();
@@ -16,7 +15,7 @@ namespace DeadWrongGames.ZServices.EventChannels
         protected void Awake()
         {
             // find and cache all channels
-            foreach (Object obj in Resources.LoadAll(EVENT_CHANNEL_ASSET_FOLDER_NAME))
+            foreach (Object obj in Resources.LoadAll(EVENT_CHANNEL_ASSET_FOLDER_NAME)) // TODO use addressables
             {
                 EventChannelSO eventChannel = obj as EventChannelSO;
                 if (eventChannel == null) continue;

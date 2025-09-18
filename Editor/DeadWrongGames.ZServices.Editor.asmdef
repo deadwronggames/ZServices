@@ -2,7 +2,8 @@
     "name": "DeadWrongGames.ZServices.Editor",
     "rootNamespace": "DeadWrongGames.ZServices.Editor",
     "references": [
-        "GUID:32a8c929e0dac654da1ee9c10f07c20c"
+        "GUID:32a8c929e0dac654da1ee9c10f07c20c",
+        "GUID:f5142027c8172d945a0a4cc91b7f4cde"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

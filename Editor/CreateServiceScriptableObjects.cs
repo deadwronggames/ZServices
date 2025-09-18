@@ -1,14 +1,18 @@
 #if UNITY_EDITOR
 using DeadWrongGames.ZServices.EventChannels;
 using System.IO;
+using DeadWrongGames.ZServices.Audio;
+using DeadWrongGames.ZTools;
 using UnityEditor;
 using UnityEngine;
 
 namespace DeadWrongGames.ZServices.Editor
 {
-    public abstract class CreateEventChannel
+    public abstract class CreateServiceScriptableObjects
     {
-        [MenuItem("Create/EventChannel")] private static void Create() => CreateScriptableObjectInstance<EventChannelSO>(Path.Combine(EventBroadcastService.RESOURCE_FOLDER_PATH, EventBroadcastService.EVENT_CHANNEL_ASSET_FOLDER_NAME));
+        private static readonly string BASE_PATH = Path.Combine(Constants.ROOT_FOLDER_NAME, Constants.PROJECT_FOLDER_NAME, Constants.SERVICES_FOLDER_NAME, Constants.SERVICES_ASSETS_FOLDER_NAME);
+        [MenuItem("Create/EventChannelSO")] private static void CreateEventChannelSO() => CreateScriptableObjectInstance<EventChannelSO>(Path.Combine(BASE_PATH, Constants.SERVICES_EVENT_CHANNEL_SO_FOLDER_NAME));
+        [MenuItem("Create/SoundDataSO")] private static void CreateSoundDataSO() => CreateScriptableObjectInstance<SoundDataSO>(Path.Combine(BASE_PATH, Constants.SERVICES_SOUND_DATA_SO_FOLDER_NAME));
         
         private static T CreateScriptableObjectInstance<T>(string folderPath) where T : ScriptableObject
         {
