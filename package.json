@@ -3,7 +3,11 @@
     "version": "1.0.0",
     "displayName": "ZServices",
     "description": "Helps with setting up services at game start.\n\nUse: Copy PF_PersistentGO to project's Resource folder!",
-    "unity": "2022.3",
+    "unity": "6.0",
+    "dependencies": {
+        "com.deadwronggames.zcommon": "1.0.0",
+        "com.deadwronggames.zutils": "1.0.0"
+    },
     "author": {
         "name": "DeadWrong Games",
         "url": "hhtps://x.com/DeadWrong_Games"
