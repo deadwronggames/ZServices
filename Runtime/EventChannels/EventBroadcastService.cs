@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using DeadWrongGames.ZUtils;
+using DeadWrongGames.ZCommon;
 using UnityEngine;
 
 namespace DeadWrongGames.ZServices.EventChannels
@@ -8,24 +8,15 @@ namespace DeadWrongGames.ZServices.EventChannels
     {
         public abstract class ChannelMarker { }
         
-        public const string EVENT_CHANNEL_ASSET_FOLDER_NAME = "EventChannels";
+        [SerializeField] AssetReferenceFolderSO _eventChannelFolderAssetReference;
         
         private readonly Dictionary<string, EventChannelSO> _eventChannelDict = new();
 
-        protected void Awake()
+        private void Awake()
         {
             // find and cache all channels
-            foreach (Object obj in Resources.LoadAll(EVENT_CHANNEL_ASSET_FOLDER_NAME)) // TODO use addressables
-            {
-                EventChannelSO eventChannel = obj as EventChannelSO;
-                if (eventChannel == null) continue;
-
-                if (!_eventChannelDict.ContainsKey(eventChannel.name)) _eventChannelDict.Add(eventChannel.name, eventChannel);
-                else $"Duplicate EventChannel: {eventChannel.name}. Duplicate not added.".Log(level: ZMethodsDebug.LogLevel.Warning);
-            }
-            
-            // register service
-            ServiceLocator.Register(this);
+            _eventChannelFolderAssetReference.LoadAssetsAsync<EventChannelSO>(asset => _eventChannelDict.Add(asset.name, asset))
+                .Completed += _ => ServiceLocator.Register(this); // register service
         }
 
         // API with different signatures that can be called by users

@@ -123,3 +123,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95c09eac6f900ad4caa0a89133f4c72e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _eventChannelFolderAssetReference: {fileID: 11400000, guid: 1887db99b18a594478766693b1d06182, type: 2}
