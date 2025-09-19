@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DeadWrongGames.ZServices.EventChannels;
+using DeadWrongGames.ZServices.EventChannel;
 using DeadWrongGames.ZUtils;
 using UnityEngine;
 
