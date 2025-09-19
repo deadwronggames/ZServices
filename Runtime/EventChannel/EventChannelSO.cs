@@ -3,9 +3,18 @@ using System.Linq;
 using DeadWrongGames.ZUtils;
 using UnityEngine;
 
-namespace DeadWrongGames.ZServices.EventChannels
+namespace DeadWrongGames.ZServices.EventChannel
 {
-    // Instances can be created via top bar
+    /// <summary>
+    /// ScriptableObject representing a single event channel.
+    /// Can register/unregister listeners and invoke events.
+    /// </summary>
+    /// <remarks>
+    /// To create a new channel:
+    /// 1. Create a new <see cref="ChannelMarker"/> class.
+    /// 2. Create a new EventChannelSO via the top bar -> Create -> EventChannelSO.
+    /// 3. Rename it exactly to match the marker class name.
+    /// </remarks>
     public class EventChannelSO : ScriptableObject
     {
         [SerializeField] bool _verbose;

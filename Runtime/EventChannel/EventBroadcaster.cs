@@ -1,8 +1,9 @@
 using System;
 using UnityEngine;
 
-namespace DeadWrongGames.ZServices.EventChannels
+namespace DeadWrongGames.ZServices.EventChannel
 {
+    /// <summary>Struct allowing event broadcast via inspector setup.</summary>
     [Serializable]
     public struct Broadcaster
     {

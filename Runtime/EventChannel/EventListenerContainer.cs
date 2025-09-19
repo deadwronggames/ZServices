@@ -1,8 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DeadWrongGames.ZServices.EventChannels
+namespace DeadWrongGames.ZServices.EventChannel
 {
+    /// <summary>
+    /// Component container for multiple <see cref="EventListener"/>s on a GameObject.
+    /// Registers/unregisters them automatically on enable/disable.
+    /// </summary>
     public class EventListenerContainer : MonoBehaviour
     {
         [SerializeField] List<EventListener> _eventListeners;

@@ -1,3 +1,0 @@
-The path has to align with
-DeadWrongGames.ZConstants.Constants.PERSISTENT_GO_PATH
-so that the prefab can automatically be copied to projects that are setup via ZTools -> NewProjectInitializer

@@ -2,9 +2,12 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace DeadWrongGames.ZServices.EventChannels
+namespace DeadWrongGames.ZServices.EventChannel
 {
-
+    /// <summary>
+    /// A listener for a specific <see cref="EventChannelSO"/>.
+    /// Handles the event by invoking a UnityEvent.
+    /// </summary>
     [Serializable]
     public class EventListener
     {
