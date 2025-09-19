@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-using DeadWrongGames.ZServices.EventChannels;
+using DeadWrongGames.ZServices.EventChannel;
 using System.IO;
 using DeadWrongGames.ZConstants;
 using DeadWrongGames.ZServices.Audio;
