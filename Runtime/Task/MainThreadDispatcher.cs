@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Concurrent;
+using DeadWrongGames.ZServices.Time;
 using UnityEngine;
 
 namespace DeadWrongGames.ZServices.Task
 {
-    public class MainThreadDispatcher : MonoBehaviour, IService
+    public class MainThreadDispatcher : MonoBehaviour, IService, IUpdatable
     {
         private readonly ConcurrentQueue<Action> _executionQueue = new();
 
@@ -13,7 +14,18 @@ namespace DeadWrongGames.ZServices.Task
             ServiceLocator.Register(this);
         }
 
-        private void Update()
+        private void Start()
+        {
+            // Register in start, just to make sure that service is available 
+            ServiceLocator.Get<UpdateCallbackService>().Register(this);
+        }
+
+        private void OnDestroy()
+        {
+            if(ServiceLocator.TryGet(out UpdateCallbackService service)) service.Unregister(this);
+        }
+
+        public void OnUpdate()
         {
             while (_executionQueue.TryDequeue(out Action action))
                 action?.Invoke();
