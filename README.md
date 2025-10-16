@@ -24,7 +24,7 @@ The package includes:
 - **Some Pre-Alpha Services**: will be added / refined soon.
 - **Editor Tools**: menu actions for creating ScriptableObject-based service assets.
 
-Any other custom service can be added, registered and accessed via the `ServiceLocator`. Just have your custom services implement the IService interface, add them as a Monobehaviour to the persistant prefab and have them register themselves in their Awake method. No change of any other code required. 
+Any other custom service can be added, registered and accessed via the `ServiceLocator`. No change of any package code required. 
 
 ## Game Bootstrapper
 
@@ -43,7 +43,7 @@ The `ServiceLocator` is a static class providing global access to services imple
 
 ### Examples
 
-Add any service you like as Monobehaviour to the persistent prefab. Register your service in the service's `Awake()` method.
+Add any service you like as Monobehaviour to the persistent prefab. Have your custom services implement the IService interface, add them as a Monobehaviour to the persistant prefab and have them register themselves in their `Awake()` method:
 ```csharp
 public class MyService : MonoBehaviour, IService
 {
