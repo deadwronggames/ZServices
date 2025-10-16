@@ -43,7 +43,7 @@ The `ServiceLocator` is a static class providing global access to services imple
 
 ### Examples
 
-Add any service you like as Monobehaviour to the persistent prefab. Have your custom services implement the IService interface, add them as a Monobehaviour to the persistant prefab and have them register themselves in their `Awake()` method:
+Add any service you like. Have your custom services implement the IService interface, add them as a Monobehaviour to the persistant prefab and have them register themselves in their `Awake()` method:
 ```csharp
 public class MyService : MonoBehaviour, IService
 {
