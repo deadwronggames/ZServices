@@ -118,21 +118,21 @@ ServiceLocator.Get<EventBroadcastService>().Broadcast<MyEventChannel>(sender: th
 
 The following services are currently not finalized or only included as stubs:
 
-- AudioService<br>
+- **AudioService<br>**
 Will provide centralized playback for SFX, music, and ambient loops.
 Designed to handle pooled AudioSources, volume groups, and dynamic ducking.
 
-- InputService<br>
+- **InputService<br>**
 Planned integration layer between Unity’s Input System and in-game systems.
 Will expose simplified event-based access to gameplay input, UI input, and rebinding tools.
 
-- Task Services<br>
+- **Task Services<br>**
 Currently limited to a simple MainThreadDispatcher. Async and multithreading helpers will follow-
 
-- TimerService<br>
+- **TimerService<br>**
 Early refactored prototype for timed actions. Not production-ready.
 
-- UpdateCallbackService<br>
+- **UpdateCallbackService<br>**
 Centralized `Update` that calls users. Avoids overhead.
 Needs more testing.
 
