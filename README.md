@@ -21,6 +21,7 @@ The package includes:
 - **GameBootstrapper**: auto-instantiates a persistent service prefab before any scene loads.
 - **ServiceLocator**: a static, generic service management system.
 - **Event Channel System**: an event broadcasting and listening system built on ScriptableObjects.
+- **Some Pre-Alpha Services**: will be added / refined soon.
 - **Editor Tools**: menu actions for creating ScriptableObject-based service assets.
 
 Any other custom service can be added, registered and accessed via the `ServiceLocator`. Just have your custom services implement the IService interface, add them as a Monobehaviour to the persistant prefab and have them register themselves in their Awake method. No change of any other code required. 
