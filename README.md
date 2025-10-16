@@ -69,9 +69,9 @@ if (ServiceLocator.TryGet(out MyService myService))
 ServiceLocator.Get<MyService>().MyServiceMethod();
 ```
 
-You can also use any of the built in services (described in more detail below) in a similar way:
+You can also get any of the built in services (described in more detail below) in a similar way:
 ```csharp
-ServiceLocator.Get<EventBroadcastService>().Broadcast<MyEventChannel>(sender: this, data: 5f); // alternatively cache the service for repeated / regular use
+EventBroadcastService eventBroadcastService = ServiceLocator.Get<EventBroadcastService>();
 ```
 
 
