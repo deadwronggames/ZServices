@@ -20,10 +20,10 @@ It is designed for modular, dependency-free systems that can be easily accessed 
 
 ## Installation
 - Install via Unity Package Manager using the Git URL: https://github.com/deadwronggames/ZServices
-- **IMPORTANT**: copy the prefab `Runtime/PF_PersistentGO` to any of your projects `Resources` folder. 
+- **IMPORTANT**: copy the prefab `Runtime/PF_PersistentGO` to any of your project's `Resources` folders. 
 - Include in your code (when needed) via the namespace: 
 ```csharp 
-using DeadWrongGames.ZServies;
+using DeadWrongGames.ZServices;
 ```
 
 ## Overview
@@ -34,7 +34,7 @@ The package includes:
 - **Event Channel System**: an event broadcasting and listening system built on ScriptableObjects.
 - **Editor Tools**: menu actions for creating ScriptableObject-based service assets.
 
-Other services can be added, registered and accessed via the `ServiceLocator`. Just have your custom services implement the IService interface, add them as a Monobehaviour to the persistant prefab and have them register themselves in their Awake method. No change of any other code required. 
+Any other custom service can be added, registered and accessed via the `ServiceLocator`. Just have your custom services implement the IService interface, add them as a Monobehaviour to the persistant prefab and have them register themselves in their Awake method. No change of any other code required. 
 
 ## Game Bootstrapper
 
@@ -53,7 +53,7 @@ The `ServiceLocator` is a static class providing global access to services imple
 
 ### Examples
 
-Add any service you like as Monobehaviour to the persitant prefab. Register your service in Awake() method.
+Add any service you like as Monobehaviour to the persistent prefab. Register your service in the service's `Awake()` method.
 ```csharp
 public class MyService : MonoBehaviour, IService
 {
@@ -62,9 +62,9 @@ public class MyService : MonoBehaviour, IService
         ServiceLocator.Register(this);
     }
 
-    publc void MyServiceMethod()
+    public void MyServiceMethod()
     {
-        Debug.Log("MyServiceMethod was called").
+        Debug.Log("MyServiceMethod was called");
     }
 }
 ```
@@ -79,7 +79,7 @@ if (ServiceLocator.TryGet(out MyService myService))
 ServiceLocator.Get<MyService>().MyServiceMethod();
 ```
 
-You can also use any of the built in services (described in moredetail below) in a similar way:
+You can also use any of the built in services (described in more detail below) in a similar way:
 ```csharp
 ServiceLocator.Get<EventBroadcastService>().Broadcast<MyEventChannel>(sender: this, data: 5f); // alternatively cache the service for repeated / regular use
 ```
@@ -98,15 +98,15 @@ A flexible, decoupled event system using ScriptableObjects. It allows components
 - Broadcaster and BroadcastInformation: optional structs to setup event triggers via the inspector.
 - Editor Debug Inspector: provides buttons for manually invoking events in the editor and find listeners.
 
-### Workflow
-1. Create one file anywhere you like and add a line for every new channel, e.g.
+### Example Workflow
+1. Create one file anywhere you like and add a line everytime you would like to create a new channel, e.g.
 ```csharp
 public class MyEventChannel : EventBroadcastService.ChannelMarker { }
 ```
 2. Copy the channel name. Use the editor menu `Create → EventChannelSO`, then rename the created asset to match the marker class name (e.g. MyEventChannel).
-3. Now you can use the channel. Attach an EventListenerContainer to any GameObject and assign one or more EventListeners referencing the channel.
+3. Now you can use the channel. Attach an EventListenerContainer to any GameObject and assign one or more EventListeners referencing the channel SO asset.
 4. Broadcast Events. You can choose to add the sender as well as any data to the broadcast (both are optional). You can broadcast in different ways, either:
-- directly from a reference to a channel
+- directly from a reference to a channel SO asset
 ```csharp
 myEventChannel.Invoke(sender: this, data: 5f);
 ```
@@ -114,11 +114,40 @@ myEventChannel.Invoke(sender: this, data: 5f);
 ```csharp
 ServiceLocator.Get<EventBroadcastService>().Broadcast<MyEventChannel>(sender: this, data: 5f); // alternatively cache the service for repeated / regular use
 ```
-- using the Broadcaster struct to set up the logic (channel, sender, data) on any component (e.g. a ZModularUI button) in the isnpector. 
-- one time, directly via the channel SO inspector (for debugging)
+- using the Broadcaster struct to set up the logic (channel, sender, data) on any component (e.g. a ZModularUI button) in the inspector. 
+- directly via the channel SO inspector (one time, for debugging)
 
 ### Debugging
 - Channels can print their listeners with PrintListeners().
 - The custom editor allows manual event invocation with test data types.
 - You can check the `Verbose` box on any channel SO instances to get helpful log messages at runtime
 - Broadcasts from code can also be found by searching for broadcast commands in the git repo of your project
+
+
+## Placeholder / Pre-Alpha Services
+
+The following services are currently not finalized or only included as stubs:
+
+- AudioService
+Will provide centralized playback for SFX, music, and ambient loops.
+Designed to handle pooled AudioSources, volume groups, and dynamic ducking.
+
+- InputService
+Planned integration layer between Unity’s Input System and in-game systems.
+Will expose simplified event-based access to gameplay input, UI input, and rebinding tools.
+
+- Task Services 
+Currently limited to a simple MainThreadDispatcher. Async and multithreading helpers will follow-
+
+- TimerService 
+Early refactored prototype for timed actions. Not production-ready.
+
+- UpdateCallbackService
+Centralized `Update` that calls users. Avoids overhead.
+Needs more testing.
+
+All of these services already exists in the game "Immortal Zombiehunter" (more or less), and will be cleanly exported to ZServicces as soon as I find the time.
+
+
+## Notes
+- **Work in progress**, some functionality may change, features will be added.
