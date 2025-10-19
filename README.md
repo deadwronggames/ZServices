@@ -114,6 +114,45 @@ ServiceLocator.Get<EventBroadcastService>().Broadcast<MyEventChannel>(sender: th
 - Broadcasts from code can also be found by searching for broadcast commands in the git repo of your project
 
 
+## Pooling Service
+
+The PoolingService provides a centralized, type-based object pooling system built around Unity’s generic ObjectPool API. It helps minimize instantiation overhead by reusing objects such as AudioSources, ParticleSystems, projectiles, or other temporary GameObjects across the project.
+
+### Architecture
+Pools are defined via ScriptableObjects derived from `BasePoolDefinitionSO`. Each pool definition specifies a prefab, an optional maximum pool size, and a factory function that determines which component type the pool handles. Each pool type is identified by the component type it manages. If multiple prefab variants share the same component type, configuration and initialization should be handled after retrieval (see `ActionOnGet()` below). At runtime, the `PoolingService` automatically instantiates all defined pools and registers itself in the `ServiceLocator`.
+
+The base class `BasePoolDefinitionSO` handles all pooling logic and provides virtual methods for customizing behavior:
+
+- `CreateFunc()`: defines how new instances are created
+
+- `ActionOnGet()`: called when an object is retrieved from the pool
+
+- `ActionOnRelease()`: called when an object is returned
+
+- `ActionOnDestroy()`: called when the pool is cleared
+
+### Usage Example
+To retrieve a pooled object, simply call:
+```csharp
+PoolingService.Poolable<MyComponent> pooled = ServiceLocator.Get<PoolingService>().Get<MyComponent>();
+MyComponent instance = pooled.Component;
+```
+When done, release the object back to its pool:
+```csharp
+pooled.Release();
+```
+This safely deactivates the object and returns it for reuse. Pools automatically clear when the active scene changes.
+
+
+### Adding custom pools
+An example implementation, ExamplePoolDefinitionAudioSourceSO, demonstrates pooling for AudioSource components. It overrides ActionOnRelease to stop playback before returning the object to the pool.
+
+Users can easily add their own pool definitions for any component type by creating new ScriptableObject classes derived from BasePoolDefinitionSO and assigning prefabs.
+
+### Status
+Stable core functionality. Additional preconfigured pool types (for particles, projectiles, etc.) will be added later.
+
+
 ## Placeholder / Pre-Alpha Services
 
 The following services are currently not finalized or only included as stubs:
