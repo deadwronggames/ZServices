@@ -1,49 +1,58 @@
 using System;
+using DeadWrongGames.ZUtils;
+using UnityEngine;
 
 namespace DeadWrongGames.ZServices.Time 
 {
     /// <summary>
-    /// Timer that ticks at a specific frequency. (N times per second)
+    /// Timer that ticks every X seconds. 
     /// </summary>
-    public class TimerTicker : Timer 
+    public class TimerTicker : Timer<TimerTicker> 
     {
-        private readonly Action _onTick;
+        private Action _onTick;
+        private float _tickIntervalSeconds = -1f;
         
-        private float _interval;
-
-        public TimerTicker(int ticksPerSecond, Action onTick, Action onTimerStart = default, Action onTimerStop = default) : base(initialTime: 0f, onTimerStart, onTimerStop) 
+        
+        /// <summary>
+        /// Factory method for creating a TimerTicker
+        /// </summary>
+        public static TimerTicker Create(GameObject userGO, float tickIntervalSeconds, Action onTick, Action onTimerStart = null, Action onTimerStop = null, string name = nameof(TimerTicker))
         {
-            CalculateTimeThreshold(ticksPerSecond);
-            _onTick = onTick;
+            TimerTicker timer = Timer<TimerTicker>.Create(userGO, initialTime: 0f, onStart: onTimerStart, onStop: onTimerStop, name: name);
+            timer._tickIntervalSeconds = tickIntervalSeconds;
+            timer._onTick = onTick;
+            return timer;
         }
 
-        public override void Tick() 
+        protected override void Start()
         {
-            if (!IsRunning) return;
-            if (CurrentTime >= _interval)
+            base.Start();
+            
+            // Validate that ticker was created correctly
+            if (_onTick == null || _tickIntervalSeconds < 0f)
+                $"{nameof(TimerTicker)} {name} was created without a tick interval or tick action!".Log(level: ZMethodsDebug.LogLevel.Error);
+        }
+
+        protected override void Tick() 
+        {
+            if (CurrentTime >= _tickIntervalSeconds)
             {
-                CurrentTime -= _interval;
+                CurrentTime -= _tickIntervalSeconds;
                 _onTick.Invoke();
             }
             else CurrentTime += UnityEngine.Time.deltaTime;
         }
+        
 
-        public override bool IsFinished => !IsRunning;
-
-        public override void Reset()
+        public override void ResetTimer()
         {
-            CurrentTime = 0;
+            CurrentTime = 0f;
         }
         
-        public void Reset(int newTicksPerSecond) 
+        public void ResetTimer(int newTickIntervalSeconds)
         {
-            CalculateTimeThreshold(newTicksPerSecond);
-            Reset();
-        }
-        
-        void CalculateTimeThreshold(int ticksPerSecond)
-        {
-            _interval = 1f / ticksPerSecond;
+            _tickIntervalSeconds = newTickIntervalSeconds;
+            ResetTimer();
         }
     }
 }

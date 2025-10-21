@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace DeadWrongGames.ZServices.Time 
@@ -6,19 +5,17 @@ namespace DeadWrongGames.ZServices.Time
     /// <summary>
     /// Timer that counts down from a specific value to zero.
     /// </summary>
-    public class TimerCountdown : Timer 
+    public class TimerCountdown : Timer<TimerCountdown>
     {
-        public float Progress => Mathf.Clamp(CurrentTime / _initialTime, 0, 1);
+        public bool IsFinished => (CurrentTime <= 0f);
+        public float Progress => (_initialTime > 0f) ? 
+            Mathf.Clamp01(CurrentTime / _initialTime) : 
+            1f;
         
-        public TimerCountdown(float initialTime, Action onTimerStart = default, Action onTimerStop = default) : base(initialTime, onTimerStart, onTimerStop) { }
-
-        public override void Tick() 
+        protected override void Tick() 
         {
-            if (!IsRunning) return;
-            if (CurrentTime > 0) CurrentTime -= UnityEngine.Time.deltaTime;
-            else Stop();
+            if (CurrentTime > 0f) CurrentTime -= UnityEngine.Time.deltaTime;
+            else StopTimer();
         }
-
-        public override bool IsFinished => (CurrentTime <= 0);
     }
 }

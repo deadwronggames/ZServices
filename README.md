@@ -23,6 +23,7 @@ The package includes:
 - **Event Channel System**: an event broadcasting and listening system built on ScriptableObjects.
 - **Pooling Service**: type-based object pooling system for efficient reuse of components and prefabs
 - **Update Callback Service**: centralized system for managing safe and efficient update loops
+- **Timer System**: self-updating, reusable timers (countdown, stopwatch, ticker) 
 - **Some Pre-Alpha Services**: will be added / refined soon.
 - **Editor Tools**: menu actions for creating ScriptableObject-based service assets.
 
@@ -155,6 +156,50 @@ Users can easily add their own pool definitions for any component type by creati
 Stable core functionality. Additional preconfigured pool types (for particles, projectiles, etc.) will be added later.
 
 
+## Timer System
+
+The Timer system provides reusable, self-updating timers that run as MonoBehaviour components and automatically update via the UpdateCallbackService. They come in several variants:
+- TimerCountdown: counts down from a specified time to zero.
+- TimerStopwatch: counts up from zero, useful for measuring durations.
+- TimerTicker: triggers an action every X seconds.
+
+All timers are designed to be created via their static Create methods, which automatically add a Timer Component to a GameObject, and set initial parameters. All timers can be paused, resumed, stopped, or reset via their public methods. Timers register themselves with UpdateCallbackService when running, and unregister automatically when stopped or destroyed.
+
+### Usage Example
+
+Another MonoBehaviour can create and use a timer like this:
+```csharp
+public class MyMonoBehaviour : MonoBehaviour
+{
+    private TimerCountdown _timerCountdown;
+
+    private void Start()
+    {
+        // Create a countdown timer of 5 seconds, with start/stop callbacks
+        _timerCountdown = TimerCountdown.Create(
+            userGO: this,
+            initialTime: 5f,
+            onStart: () => Debug.Log("Timer started"),
+            onStop: () => Debug.Log("Timer finished")
+        );
+
+        _timerCountdown.StartTimer();
+    }
+
+    private void Update()
+    {
+        if (_timerCountdown.IsRunning)
+        {
+            Debug.Log($"Time remaining: {_timerCountdown.CurrentTime}");
+        }
+    }
+}
+```
+
+### Status
+Confident that it works as intended but the system in its current form has not really been tested / used yet.
+
+
 ## Update Callback Service
 
 The `UpdateCallbackService` provides a centralized and safe update loop for MonoBehaviour as well as non-MonoBehaviour classes or systems that need regular Update, LateUpdate, or FixedUpdate calls.
@@ -207,9 +252,6 @@ Will expose simplified event-based access to gameplay input, UI input, and rebin
 
 - **Task Services<br>**
 Currently limited to a simple MainThreadDispatcher. Async and multithreading helpers will follow.
-
-- **TimerService<br>**
-Early refactored prototype for timed actions. Not production-ready.
 
 All of these services already exists in the game "Immortal Zombiehunter" (more or less), and will be cleanly exported to ZServicces as soon as I find the time.
 

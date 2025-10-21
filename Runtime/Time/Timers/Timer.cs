@@ -1,79 +1,84 @@
 using System;
-using DeadWrongGames.ZUtils;
+using UnityEngine;
 
 namespace DeadWrongGames.ZServices.Time
 {
-    public abstract class Timer : IDisposable 
+    /// Base class for all timers that automatically updates via <see cref="UpdateCallbackService"/> 
+    public abstract class Timer<TTimer> : MonoBehaviour, IUpdatable where TTimer : Timer<TTimer>
     {
         public float CurrentTime { get; protected set; }
-        public bool IsRunning { get; private set; }
-        public abstract bool IsFinished { get; }
+        public bool IsRunning
+        {
+            get => _isRunningBacking;
+            private set {
+                // Before setting value, register or unregister from update callback service
+                if (value && !_isRunningBacking) _updateCallbackService.Register(this);
+                if (!value && _isRunningBacking) _updateCallbackService.Unregister(this);
+                _isRunningBacking = value;
+            }
+        }
+        private bool _isRunningBacking;
 
         protected float _initialTime;
-        private readonly TimerManager _timerManager;
+        private Action _onTimerStart;
+        private Action _onTimerStop;
+        private UpdateCallbackService _updateCallbackService;
 
-        private readonly Action _onTimerStart;
-        private readonly Action _onTimerStop;
-
-        protected Timer(float initialTime, Action onTimerStart = default, Action onTimerStop = default) 
+        /// <summary>
+        /// Creates and returns a new Timer Component on a GameObject
+        /// </summary>
+        public static TTimer Create(GameObject userGO, float initialTime, Action onStart = null, Action onStop = null, string name = nameof(TTimer))
         {
-            _initialTime = initialTime;
-            _onTimerStart = onTimerStart;
-            _onTimerStop = onTimerStop;
-                
-            _timerManager = ServiceLocator.Get<TimerManager>();
+            TTimer timer = userGO.AddComponent<TTimer>();
+            timer._initialTime = initialTime;
+            timer._onTimerStart = onStart;
+            timer._onTimerStop = onStop;
+            
+            return timer;
+        }
+        
+        protected virtual void Start()
+        {
+            _updateCallbackService = ServiceLocator.Get<UpdateCallbackService>(); 
         }
 
-        public void Start() 
+        private void OnDestroy()
+        {
+            if (_updateCallbackService != null) _updateCallbackService.Unregister(this);
+        }
+        
+        public void OnUpdate() 
+        {
+            if (IsRunning) Tick();
+        }
+        protected abstract void Tick();
+
+        public void StartTimer() 
         {
             CurrentTime = _initialTime;
             if (!IsRunning) 
             {
                 IsRunning = true;
-                _timerManager.RegisterTimer(this);
-                _onTimerStart.Invoke();
+                _onTimerStart?.Invoke();
             }
         }
 
-        public void Stop() {
+        public void StopTimer() {
             if (IsRunning) {
                 IsRunning = false;
-                _timerManager.DeregisterTimer(this);
-                _onTimerStop.Invoke();
+                _onTimerStop?.Invoke();
             }
         }
-
-        public abstract void Tick();
         
-        public void Resume() => IsRunning = true;
-        public void Pause() => IsRunning = false;
+        public void ResumeTimer() => IsRunning = true;
+        public void PauseTimer() => IsRunning = false;
 
-        public virtual void Reset() => CurrentTime = _initialTime;
+        public virtual void ResetTimer() => CurrentTime = _initialTime;
 
-        public virtual void Reset(float newTime) 
+        public virtual void ResetTimer(float newTime) 
         {
             _initialTime = newTime;
-            Reset();
-        }
-
-        ~Timer() 
-        {
-            Dispose(false);
-        }
-
-        // Call Dispose to ensure de-registration of the timer from the TimerManager
-        // when the user is done with the timer or being destroyed
-        private bool _disposed;
-        public void Dispose() {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing) {
-            if (_disposed) return;
-            if (disposing) _timerManager.DeregisterTimer(this);
-
-            _disposed = true;
+            ResetTimer();
         }
     }
 }
