@@ -24,7 +24,7 @@ namespace DeadWrongGames.ZServices.Time
             return timer;
         }
 
-        private void Awake()
+        private void Start()
         {
             // Validate that ticker was created correctly
             if (_onTick == null || _tickIntervalSeconds < 0f)
