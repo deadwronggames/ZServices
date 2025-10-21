@@ -24,10 +24,8 @@ namespace DeadWrongGames.ZServices.Time
             return timer;
         }
 
-        protected override void Start()
+        private void Awake()
         {
-            base.Start();
-            
             // Validate that ticker was created correctly
             if (_onTick == null || _tickIntervalSeconds < 0f)
                 $"{nameof(TimerTicker)} {name} was created without a tick interval or tick action!".Log(level: ZMethodsDebug.LogLevel.Error);

@@ -1,4 +1,5 @@
 using System;
+using DeadWrongGames.ZUtils;
 using UnityEngine;
 
 namespace DeadWrongGames.ZServices.Time
@@ -12,6 +13,7 @@ namespace DeadWrongGames.ZServices.Time
             get => _isRunningBacking;
             private set {
                 // Before setting value, register or unregister from update callback service
+                (_updateCallbackService != null).Print();
                 if (value && !_isRunningBacking) _updateCallbackService.Register(this);
                 if (!value && _isRunningBacking) _updateCallbackService.Unregister(this);
                 _isRunningBacking = value;
@@ -22,7 +24,8 @@ namespace DeadWrongGames.ZServices.Time
         protected float _initialTime;
         private Action _onTimerStart;
         private Action _onTimerStop;
-        private UpdateCallbackService _updateCallbackService;
+        private UpdateCallbackService _updateCallbackService => ZMethods.LazyInitialization(ref _updateCallbackServiceBacking, ServiceLocator.Get<UpdateCallbackService>);
+        private UpdateCallbackService _updateCallbackServiceBacking;
 
         /// <summary>
         /// Creates and returns a new Timer Component on a GameObject
@@ -36,15 +39,10 @@ namespace DeadWrongGames.ZServices.Time
             
             return timer;
         }
-        
-        protected virtual void Start()
-        {
-            _updateCallbackService = ServiceLocator.Get<UpdateCallbackService>(); 
-        }
 
         private void OnDestroy()
         {
-            if (_updateCallbackService != null) _updateCallbackService.Unregister(this);
+            if (_updateCallbackServiceBacking != null) _updateCallbackServiceBacking.Unregister(this);
         }
         
         public void OnUpdate() 
