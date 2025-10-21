@@ -179,6 +179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6808219127203085657}
   - component: {fileID: 2372668471845872300}
+  - component: {fileID: 66278168552190216}
   m_Layer: 0
   m_Name: TimeServices
   m_TagString: Untagged
@@ -211,5 +212,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7bdcb4e3edc397341bbd1516e9e69d4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &66278168552190216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9122849833842864057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2acbd9857bfad440a64e2ddfcfef88e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
