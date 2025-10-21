@@ -52,6 +52,12 @@ namespace DeadWrongGames.ZServices.Time
         /// <param name="user"></param>
         public void Register(IBaseUpdatable user)
         {
+            if (user is not IUpdatable && user is not ILateUpdatable && user is not IFixedUpdatable)
+            {
+                $"{user} does not implement any of the non-base updatable interfaces. Returning.".Log(level: ZMethodsDebug.LogLevel.Warning);
+                return;
+            }
+            
             if (user is IUpdatable updatable) _usersUpdatablePending.Add(updatable);
             if (user is ILateUpdatable lateUpdatable) _usersLateUpdatablePending.Add(lateUpdatable);
             if (user is IFixedUpdatable fixedUpdatable) _usersFixedUpdatablePending.Add(fixedUpdatable);
