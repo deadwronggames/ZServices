@@ -27,8 +27,8 @@ namespace DeadWrongGames.ZServices
         {
             service = default;
             
-            if (!s_serviceDict.TryGetValue(typeof(TService), out IService serviceObject) || serviceObject == null) return false;
-            if (!ZMethods.TryCast(serviceObject, out service, verbose: false)) return false;
+            if (!s_serviceDict.TryGetValue(typeof(TService), out IService serviceInterface) || serviceInterface == null) return false;
+            if (!ZMethods.TryCast(serviceInterface, out service, verbose: false)) return false;
             
             return true;
         }
