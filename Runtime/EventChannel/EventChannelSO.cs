@@ -19,16 +19,16 @@ namespace DeadWrongGames.ZServices.EventChannel
     {
         [SerializeField] bool _verbose;
         
-        private readonly List<EventListener> _eventListeners = new();
-        
+        private readonly HashSet<EventListener> _eventListeners = new();
+
         public void RegisterListener(EventListener eventListener)
         {
-            if (!_eventListeners.Contains(eventListener)) _eventListeners.Add(eventListener);
+            _eventListeners.Add(eventListener);
         }
 
         public void UnregisterListener(EventListener eventListener)
         {
-            if (_eventListeners.Contains(eventListener)) _eventListeners.Remove(eventListener);
+            _eventListeners.Remove(eventListener);
         }
         
         public void Invoke(                             ) => Invoke(null, null);
@@ -39,10 +39,12 @@ namespace DeadWrongGames.ZServices.EventChannel
             if (_verbose)
             {
                 string senderName = (sender != null) ? sender.name : "Unknown Sender";
-                $"<i>{senderName}</i> broadcasted on channel <i>{name}</i> with data {data}".Print();
+                $"<i>{senderName}</i> broadcasted on channel <i>{name}</i> with data {data}".Log(level: ZMethodsDebug.LogLevel.Verbose);
             }
             
-            for (int i = _eventListeners.Count - 1; i >= 0; i--) { _eventListeners[i].OnEventRaised(sender, data); }
+            // Copy to avoid modification during iteration
+            foreach (EventListener listener in _eventListeners.ToArray())
+                listener.OnEventRaised(sender, data);
         }
         
         // Just for debugging purposes
