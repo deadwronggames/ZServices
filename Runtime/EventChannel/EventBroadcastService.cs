@@ -14,7 +14,7 @@ namespace DeadWrongGames.ZServices.EventChannel
         /// <summary>
         /// Marker base class for defining custom event channels.
         /// Create a new channel by subclassing this:
-        /// <code>public class TestEvent : EventBroadcastService.ChannelMarker { }</code>
+        /// <code>public class TestEventChannel : EventBroadcastService.ChannelMarker { }</code>
         /// </summary>
         public abstract class ChannelMarker { }
         
