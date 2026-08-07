@@ -1,4 +1,5 @@
 using UnityEngine;
+using DeadWrongGames.ZServices.Diagnostics;
 
 namespace DeadWrongGames.ZServices
 {
@@ -8,8 +9,8 @@ namespace DeadWrongGames.ZServices
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Execute()
         {
-            // Instantiate Logger
-            Debug.Logger.Initialize();
+            // Instantiate ZServices logging
+            LogService.Initialize();
             
             // Instantiate Persistent GameObject with Services
             Object persistentGO = Object.Instantiate(Resources.Load("PF_PersistentGO"));
