@@ -1,3 +1,7 @@
+## [1.1.0] - 2026-08-07
+### Added
+- Added logging service.
+
 ## [1.0.1] - 2026-08-05
 ### Minor cleanup
 - Minor QoL and comments for EventChannel service
