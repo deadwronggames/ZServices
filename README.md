@@ -23,6 +23,7 @@ The package includes:
 - **Event Channel System**: an event broadcasting and listening system built on ScriptableObjects.
 - **Pooling Service**: type-based object pooling system for efficient reuse of components and prefabs
 - **Update Callback Service**: centralized system for managing safe and efficient update loops
+- **Logging System**: centralized logging with categories, configurable sinks, log levels, and automatic exception handling.
 - **Timer System**: self-updating, reusable timers (countdown, stopwatch, ticker) 
 - **Some Pre-Alpha Services**: will be added / refined soon.
 - **Editor Tools**: menu actions for creating ScriptableObject-based service assets.
@@ -31,7 +32,7 @@ Any other custom service can be added, registered and accessed via the `ServiceL
 
 ## Game Bootstrapper
 
-GameBootstrapper ensures that the prefab named PF_PersistentGO is loaded from the Resources folder and marked as DontDestroyOnLoad.
+GameBootstrapper handles initialization and ensures that the prefab named PF_PersistentGO is loaded from the Resources folder and marked as DontDestroyOnLoad.
 All service components (e.g. EventBroadcastService, AudioService) should live on this prefab.
 
 ## Service Locator
@@ -238,6 +239,88 @@ public class Mover : UpdatedMonoBehaviour, IUpdatable
 
 The service safely queues new registrations until after the current update iteration finishes, ensuring no collection modification errors occur.
 
+## Logging System
+
+The `LogService` provides a centralized logging system with configurable log levels, categories, and output sinks.
+
+Unlike most services in ZServices, the logging system initializes automatically. No component needs to be added to `PF_PersistentGO`, and no manual registration is required.
+
+### Features
+
+- Multiple log levels:
+  - Trace
+  - Debug
+  - Info
+  - Warning
+  - Error
+  - Fatal
+- Custom log categories
+- Per-category minimum log level overrides
+- Per-category sink overrides
+- Multiple simultaneous log sinks
+- Automatic capture of unhandled Unity exceptions
+- `LogOnce()` support to prevent repeated messages from spamming the output
+
+### Basic Usage
+
+The simplest usage requires no configuration:
+
+```csharp
+LogService.Info("Game started").Log();
+```
+Logs without an explicitly provided category use `BuiltInLogCategories.General`.
+Categories can also be specified: 
+```csharp
+LogService.Info(LogCategories.Economy, "Player bought an item").Log();
+```
+`LogOnce()` can be used for messages that should only appear once to prevent repeated warnings inside frequently executed code paths:
+```csharp
+LogService.Warning("Missing save data").LogOnce();
+```
+
+### Creating Log Categories
+Custom categories can be defined by creating a `LogCategories.cs` file anywhere in the project:
+```csharp
+public static class LogCategories
+{
+    public static readonly LogCategory Economy = new("Economy");
+    public static readonly LogCategory Combat = new("Combat");
+    public static readonly LogCategory AI = new("AI");
+}
+```
+Categories are shown in the log message and are also used as configuration keys that allow different logging rules for different systems.
+
+### Configuration
+By default, the logger uses:
+- Minimum log level: Info
+- Sink: `UnityConsoleSink`
+
+Custom configuration that defines overrides per category, can be provided by implementing exactly one `ILoggerConfigurationProvider`:
+```csharp
+[LoggerConfigurationProvider]
+public sealed class GameLoggerConfigurationProvider : ILoggerConfigurationProvider
+{
+    public LoggerConfiguration GetConfiguration()
+    {
+        return new LoggerConfiguration(
+            minLogLevelOverridesByCategory: new Dictionary<LogCategory, LogLevel>
+            {
+                [LogCategories.Economy] = LogLevel.Debug,
+            },
+
+            sinkOverridesByCategory: new Dictionary<LogCategory, IReadOnlyList<ILogSink>>
+            {
+                [LogCategories.Economy] = new List<ILogSink> { new UnityConsoleSink(), new FileSink() }.AsReadOnly(),
+            });
+    }
+}
+```
+Currently only `UnityConsoleSink` is implemented, `FileSink` is a stub. More sinks might get added at a later point. 
+
+### Unhandled Exceptions
+Unhandled Unity exceptions are automatically routed through the logging system with `LogLevel.Fatal` using `BuiltInLogCategories.UnhandledException`.
+
+
 ## Placeholder / Pre-Alpha Services
 
 The following services are currently not finalized or only included as stubs:
@@ -253,7 +336,7 @@ Will expose simplified event-based access to gameplay input, UI input, and rebin
 - **Task Services<br>**
 Currently limited to a simple MainThreadDispatcher. Async and multithreading helpers will follow.
 
-All of these services already exists in the game "Immortal Zombiehunter" (more or less), and will be cleanly exported to ZServicces as soon as I find the time.
+All of these services already exist in the game "Immortal Zombiehunter" (more or less), and will be cleanly exported to ZServices as soon as I find the time.
 
 
 ## Notes
