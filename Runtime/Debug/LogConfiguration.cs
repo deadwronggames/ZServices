@@ -1,10 +1,44 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DeadWrongGames.ZUtils;
 
 namespace DeadWrongGames.ZServices.Debug
 {
+    /// <summary>
+    /// Top-level logger configuration supplied by the game.
+    /// </summary>
+    public sealed class LoggerConfiguration // TODO does this need to be a class? could it not be e.g. a record struct (would still need to be discoverable of course)
+    {
+        /// <summary>Global minimum log level applied when no category override exists.</summary>
+        public static LogLevel DefaultMinLevel => LogLevel.Info;
+
+        /// <summary> Global sinks used when no category-level sink override exists. </summary>
+        public static IReadOnlyList<ILogSink> DefaultSinks => new List<ILogSink> { new UnityConsoleSink() };
+
+        public LoggerConfiguration(Dictionary<LogCategory, LogLevel>? categoryOverrideMinLogLevel = null, Dictionary<LogCategory, List<ILogSink>>? categoryOverrideSinks = null)
+        {
+            _categoryOverrideMinLogLevel = categoryOverrideMinLogLevel ?? new Dictionary<LogCategory, LogLevel>();
+            _categoryOverrideMinLogLevel.Add(BuiltInLogCategories.UnhandledException, LogLevel.Fatal); // Does not mean the game necessarily crashes but an exception was not handled, I think Fatal is fair
+
+            _categoryOverrideSinks = categoryOverrideSinks ?? new Dictionary<LogCategory, List<ILogSink>>();
+            _categoryOverrideSinks.Add(BuiltInLogCategories.UnhandledException, new List<ILogSink> { new FileSink() }); // Unity already logs this in the console. 
+        }
+
+        /// <summary>
+        /// Per-category overrides keyed by <see cref="LogCategory.Name"/>.
+        /// Each entry may override the minimum level, the sinks, or both.
+        /// </summary>
+        public IReadOnlyDictionary<LogCategory, LogLevel> CategoryOverrideMinLogLevel => _categoryOverrideMinLogLevel;
+        private readonly Dictionary<LogCategory, LogLevel> _categoryOverrideMinLogLevel;
+        public IReadOnlyDictionary<LogCategory, List<ILogSink>> CategoryOverrideSinks => _categoryOverrideSinks;
+        private readonly Dictionary<LogCategory, List<ILogSink>> _categoryOverrideSinks;
+    }
+    
+    
     /// <summary>
     /// Apply this attribute to exactly one class in the game assembly that implements
     /// <see cref="ILoggerConfigurationProvider"/>. The logger will discover it automatically
@@ -13,6 +47,7 @@ namespace DeadWrongGames.ZServices.Debug
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public sealed class LoggerConfigurationProviderAttribute : Attribute { }
 
+    
     /// <summary>
     /// Implement this interface on a class decorated with
     /// <see cref="LoggerConfigurationProviderAttribute"/> to supply logger configuration
@@ -22,40 +57,8 @@ namespace DeadWrongGames.ZServices.Debug
     {
         LoggerConfiguration GetConfiguration();
     }
-
-    /// <summary>
-    /// Top-level logger configuration supplied by the game.
-    /// </summary>
-    public sealed class LoggerConfiguration
-    {
-        /// <summary>Global minimum log level applied when no category override exists.</summary>
-        public LogLevel DefaultMinLevel { get; set; } = LogLevel.Info;
-
-        /// <summary>
-        /// Global sinks used when no category-level sink override exists.
-        /// Defaults to a single <see cref="UnityConsoleSink"/> if left null or empty.
-        /// </summary>
-        public IReadOnlyList<ILogSink> DefaultSinks { get; set; }
-
-        /// <summary>
-        /// Per-category overrides keyed by <see cref="LogCategory.Name"/>.
-        /// Each entry may override the minimum level, the sinks, or both.
-        /// </summary>
-        public IReadOnlyDictionary<string, CategoryConfiguration> CategoryOverrides { get; set; }
-    }
-
-    /// <summary>
-    /// Optional per-category overrides. Null fields fall back to the global configuration.
-    /// </summary>
-    public sealed class CategoryConfiguration
-    {
-        /// <summary>Overrides the global minimum level for this category. Null = use global.</summary>
-        public LogLevel? MinLevel { get; set; }
-
-        /// <summary>Overrides the global sinks for this category. Null = use global sinks.</summary>
-        public IReadOnlyList<ILogSink> Sinks { get; set; }
-    }
-
+    
+    
     /// <summary>
     /// Scans all loaded assemblies for exactly one <see cref="ILoggerConfigurationProvider"/>
     /// decorated with <see cref="LoggerConfigurationProviderAttribute"/>.
@@ -64,7 +67,7 @@ namespace DeadWrongGames.ZServices.Debug
     {
         internal static LoggerConfiguration Discover()
         {
-            var providerTypes = AppDomain.CurrentDomain
+            List<Type> providerTypes = AppDomain.CurrentDomain
                 .GetAssemblies()
                 .SelectMany(SafeGetTypes)
                 .Where(t =>
@@ -76,6 +79,7 @@ namespace DeadWrongGames.ZServices.Debug
 
             if (providerTypes.Count == 0)
             {
+                "providerTypes.Count == 0".Print();
                 // No game-provided configuration — use defaults.
                 return new LoggerConfiguration();
             }
@@ -88,7 +92,7 @@ namespace DeadWrongGames.ZServices.Debug
                     $"Exactly one is allowed. Found: {names}");
             }
 
-            var instance = (ILoggerConfigurationProvider)Activator.CreateInstance(providerTypes[0]);
+            ILoggerConfigurationProvider? instance = (ILoggerConfigurationProvider)Activator.CreateInstance(providerTypes[0]);
             return instance.GetConfiguration();
         }
 
