@@ -1,12 +1,13 @@
-namespace DeadWrongGames.ZServices.Time;
-
-/// <summary>
-/// Timer that counts up from zero to infinity. Great for measuring durations.
-/// </summary>
-public class TimerStopwatch : Timer<TimerStopwatch> 
+namespace DeadWrongGames.ZServices.Time
 {
-    protected override void Tick() 
+    /// <summary>
+    /// Timer that counts up from zero to infinity. Great for measuring durations.
+    /// </summary>
+    public class TimerStopwatch : Timer<TimerStopwatch> 
     {
-        CurrentTime += UnityEngine.Time.deltaTime;
+        protected override void Tick() 
+        {
+            CurrentTime += UnityEngine.Time.deltaTime;
+        }
     }
 }

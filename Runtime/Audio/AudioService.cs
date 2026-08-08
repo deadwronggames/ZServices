@@ -1,14 +1,15 @@
 using UnityEngine;
 
-namespace DeadWrongGames.ZServices.Audio;
-
-public class AudioService : MonoBehaviour, IService
+namespace DeadWrongGames.ZServices.Audio
 {
-    public abstract class SoundTypeMarker { }
-
-    private void Awake()
+    public class AudioService : MonoBehaviour, IService
     {
-        ServiceLocator.Register(this);
+        public abstract class SoundTypeMarker { }
+
+        private void Awake()
+        {
+            ServiceLocator.Register(this);
+        }
     }
 }
 

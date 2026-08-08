@@ -1,18 +1,19 @@
 using System;
 using UnityEngine;
 
-namespace DeadWrongGames.ZServices.Pooling;
-
-[CreateAssetMenu(menuName = "Scriptable Objects/Pooling/PoolDefinitionAudioSource", fileName = "PoolDefinitionAudioSource")]
-public class ExamplePoolDefinitionAudioSourceSO : BasePoolDefinitionSO
+namespace DeadWrongGames.ZServices.Pooling
 {
-    // For every different inheritor: Change generic type in GetComponent! 
-    // Optional: Override any of the pool creation methods.
-    protected override Func<GameObject, Component> ComponentFactory => go => go.GetComponent<AudioSource>();
-
-    protected override void ActionOnRelease(Component poolable)
+    [CreateAssetMenu(menuName = "Scriptable Objects/Pooling/PoolDefinitionAudioSource", fileName = "PoolDefinitionAudioSource")]
+    public class ExamplePoolDefinitionAudioSourceSO : BasePoolDefinitionSO
     {
-        base.ActionOnRelease(poolable);
-        poolable.gameObject.GetComponent<AudioSource>().Stop();
+        // For every different inheritor: Change generic type in GetComponent! 
+        // Optional: Override any of the pool creation methods.
+        protected override Func<GameObject, Component> ComponentFactory => go => go.GetComponent<AudioSource>();
+
+        protected override void ActionOnRelease(Component poolable)
+        {
+            base.ActionOnRelease(poolable);
+            poolable.gameObject.GetComponent<AudioSource>().Stop();
+        }
     }
 }

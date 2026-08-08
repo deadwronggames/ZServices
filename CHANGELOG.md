@@ -1,3 +1,6 @@
+### Fixes
+- go back to block-scoped namespaces because unity does not like file-scoped apparently
+
 ### Style
 - Use file-scoped namespaces
 

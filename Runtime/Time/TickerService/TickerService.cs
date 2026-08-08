@@ -2,58 +2,59 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DeadWrongGames.ZServices.Time;
-
-public class TickerService : MonoBehaviour, IService
+namespace DeadWrongGames.ZServices.Time
 {
-    private readonly Dictionary<float, Action> _tickerActionsDict = new();
-    private readonly Dictionary<float, TimerTicker> _timersDict = new();
-
-    private void Awake()
+    public class TickerService : MonoBehaviour, IService
     {
-        ServiceLocator.Register(this);
-    }
+        private readonly Dictionary<float, Action> _tickerActionsDict = new();
+        private readonly Dictionary<float, TimerTicker> _timersDict = new();
 
-    /// <summary>
-    /// Subscribe to a shared tick interval (e.g., 0.5f = every 0.5 seconds).
-    /// Automatically creates and manages a TimerTicker if needed.
-    /// </summary>
-    public void Subscribe(float interval, Action callback)
-    {
-        if (!_tickerActionsDict.ContainsKey(interval))
+        private void Awake()
         {
-            _tickerActionsDict[interval] = null;
-            TimerTicker ticker = TimerTicker.Create(
-                gameObject, 
-                interval,
-                onTick: () => _tickerActionsDict[interval]?.Invoke(),
-                name: $"TimerTicker_{interval}s");
-            ticker.StartTimer();
-            _timersDict[interval] = ticker;
+            ServiceLocator.Register(this);
         }
 
-        _tickerActionsDict[interval] += callback;
-    }
-
-    /// <summary>
-    /// Unsubscribe from a tick interval. 
-    /// Automatically stops and cleans up if no subscribers remain.
-    /// </summary>
-    public void Unsubscribe(float interval, Action callback)
-    {
-        if (!_tickerActionsDict.ContainsKey(interval)) return;
-
-        _tickerActionsDict[interval] -= callback;
-
-        if (_tickerActionsDict[interval] == null)
+        /// <summary>
+        /// Subscribe to a shared tick interval (e.g., 0.5f = every 0.5 seconds).
+        /// Automatically creates and manages a TimerTicker if needed.
+        /// </summary>
+        public void Subscribe(float interval, Action callback)
         {
-            _tickerActionsDict.Remove(interval);
-                
-            if (_timersDict.TryGetValue(interval, out TimerTicker ticker))
+            if (!_tickerActionsDict.ContainsKey(interval))
             {
-                _timersDict.Remove(interval);
-                ticker.StopTimer();
-                Destroy(ticker); // TODO test, I hope that really only destroys the component, not the GO
+                _tickerActionsDict[interval] = null;
+                TimerTicker ticker = TimerTicker.Create(
+                    gameObject, 
+                    interval,
+                    onTick: () => _tickerActionsDict[interval]?.Invoke(),
+                    name: $"TimerTicker_{interval}s");
+                ticker.StartTimer();
+                _timersDict[interval] = ticker;
+            }
+
+            _tickerActionsDict[interval] += callback;
+        }
+
+        /// <summary>
+        /// Unsubscribe from a tick interval. 
+        /// Automatically stops and cleans up if no subscribers remain.
+        /// </summary>
+        public void Unsubscribe(float interval, Action callback)
+        {
+            if (!_tickerActionsDict.ContainsKey(interval)) return;
+
+            _tickerActionsDict[interval] -= callback;
+
+            if (_tickerActionsDict[interval] == null)
+            {
+                _tickerActionsDict.Remove(interval);
+                
+                if (_timersDict.TryGetValue(interval, out TimerTicker ticker))
+                {
+                    _timersDict.Remove(interval);
+                    ticker.StopTimer();
+                    Destroy(ticker); // TODO test, I hope that really only destroys the component, not the GO
+                }
             }
         }
     }
