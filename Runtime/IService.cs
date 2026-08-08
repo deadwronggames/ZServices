@@ -1,4 +1,3 @@
-namespace DeadWrongGames.ZServices
-{
-    public interface IService { }
-}
+namespace DeadWrongGames.ZServices;
+
+public interface IService { }

@@ -1,19 +1,18 @@
-namespace DeadWrongGames.ZServices.Time
+namespace DeadWrongGames.ZServices.Time;
+
+public interface IBaseUpdatable { }
+
+public interface IUpdatable : IBaseUpdatable
 {
-    public interface IBaseUpdatable { }
+    void OnUpdate();
+}
 
-    public interface IUpdatable : IBaseUpdatable
-    {
-        void OnUpdate();
-    }
+public interface IFixedUpdatable : IBaseUpdatable
+{
+    void OnFixedUpdate();
+}
 
-    public interface IFixedUpdatable : IBaseUpdatable
-    {
-        void OnFixedUpdate();
-    }
-
-    public interface ILateUpdatable : IBaseUpdatable
-    {
-        void OnLateUpdate();
-    }
+public interface ILateUpdatable : IBaseUpdatable
+{
+    void OnLateUpdate();
 }

@@ -1,3 +1,6 @@
+### Style
+- Use file-scoped namespaces
+
 ## [1.1.0] - 2026-08-07
 ### Added
 - Added logging service.
