@@ -1,3 +1,4 @@
+## [1.1.1] - 2026-08-09
 ### Added
 - Added built-in log category "UI" (used by ZModularUI package) and "ZServices" (used by this package).
 ### Changed
