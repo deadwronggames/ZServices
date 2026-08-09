@@ -1,18 +1,20 @@
-### Fixes
-- go back to block-scoped namespaces because unity does not like file-scoped apparently
+### Added
+- Added built-in log category "UI" (used by ZModularUI package) and "ZServices" (used by this package).
+### Changed
+- Use LogService from this package instead of ZUtils logging (which has been removed).
 
-### Style
-- Use file-scoped namespaces
 
 ## [1.1.0] - 2026-08-07
 ### Added
 - Added logging service.
+
 
 ## [1.0.1] - 2026-08-05
 ### Minor cleanup
 - Minor QoL and comments for EventChannel service
 - Add `csc.rsp` and `IsExternalInit.cs` files for C# 10 functionality
 - Fix Author-Twitter URL in `package.json` 
+
 
 ## [1.0.0] - 2025-09-07
 ### First Release

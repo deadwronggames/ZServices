@@ -1,5 +1,5 @@
 using System;
-using DeadWrongGames.ZUtils;
+using DeadWrongGames.ZServices.Diagnostics;
 using UnityEngine;
 
 namespace DeadWrongGames.ZServices.Time
@@ -28,7 +28,7 @@ namespace DeadWrongGames.ZServices.Time
         {
             // Validate that ticker was created correctly
             if (_onTick == null || _tickIntervalSeconds < 0f)
-                $"{nameof(TimerTicker)} {name} was created without a tick interval or tick action!".Log(level: ZMethodsDebug.LogLevel.Error);
+                LogService.Error(BuiltInLogCategories.ZSystems, $"{nameof(TimerTicker)} {name} was created without a tick interval or tick action!").Log();
         }
 
         protected override void Tick() 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DeadWrongGames.ZServices.Diagnostics;
 using DeadWrongGames.ZUtils;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace DeadWrongGames.ZServices.EventChannel
     /// </summary>
     /// <remarks>
     /// To create a new channel:
-    /// 1. Create a new <see cref="ChannelMarker"/> class.
+    /// 1. Create a new "ChannelMarker" class.
     /// 2. Create a new EventChannelSO via the top bar -> Create -> EventChannelSO.
     /// 3. Rename it exactly to match the marker class name.
     /// </remarks>
@@ -39,7 +40,7 @@ namespace DeadWrongGames.ZServices.EventChannel
             if (_verbose)
             {
                 string senderName = (sender != null) ? sender.name : "Unknown Sender";
-                $"<i>{senderName}</i> broadcasted on channel <i>{name}</i> with data {data}".Log(level: ZMethodsDebug.LogLevel.Verbose);
+                LogService.Debug(BuiltInLogCategories.ZSystems, $"<i>{senderName}</i> broadcasted on channel <i>{name}</i> with data {data}").Log();
             }
             
             // Copy to avoid modification during iteration

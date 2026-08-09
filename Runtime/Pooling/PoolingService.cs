@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DeadWrongGames.ZUtils;
+using DeadWrongGames.ZServices.Diagnostics;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
@@ -42,7 +42,7 @@ namespace DeadWrongGames.ZServices.Pooling
         private void OnSceneChanged(Scene _, Scene __) => ClearPools(); 
         private void ClearPools()
         {
-            "Clearing Pools()".Log(level: ZMethodsDebug.LogLevel.Info);
+            LogService.Info(BuiltInLogCategories.ZSystems, "Clearing Pools()").Log();
             foreach (IObjectPool<Component> pool in _poolDict.Values) pool?.Clear();
         }
 
@@ -54,7 +54,7 @@ namespace DeadWrongGames.ZServices.Pooling
         {
             if (!_poolDict.TryGetValue(typeof(T), out IObjectPool<Component> pool))
             {
-                $"No pool was defined for {typeof(T)}. Make sure to assign a {nameof(BasePoolDefinitionSO)} instance to this Service. Returning default.".Log(level: ZMethodsDebug.LogLevel.Warning);
+                LogService.Warning(BuiltInLogCategories.ZSystems, $"No pool was defined for {typeof(T)}. Make sure to assign a {nameof(BasePoolDefinitionSO)} instance to this Service. Returning default.").Log();
                 return default;
             }
 

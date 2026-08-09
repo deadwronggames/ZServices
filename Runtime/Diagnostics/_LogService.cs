@@ -243,9 +243,9 @@ namespace DeadWrongGames.ZServices.Diagnostics
         }
 
         /// <summary>Dispatches this log entry.</summary>
-        public void Log() => Diagnostics.LogService.Dispatch(this, onlyOnce: false);
+        public void Log() => LogService.Dispatch(this, onlyOnce: false);
 
         /// <summary>Dispatches this log entry once per call site. Subsequent calls from the same line are discarded.</summary>
-        public void LogOnce() => Diagnostics.LogService.Dispatch(this, onlyOnce: true);
+        public void LogOnce() => LogService.Dispatch(this, onlyOnce: true);
     }
 }

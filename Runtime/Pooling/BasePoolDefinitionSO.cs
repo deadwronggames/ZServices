@@ -1,5 +1,5 @@
 using System;
-using DeadWrongGames.ZUtils;
+using DeadWrongGames.ZServices.Diagnostics;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -22,7 +22,7 @@ namespace DeadWrongGames.ZServices.Pooling
             // Validate that prefab contains the required component type
             Component component = ComponentFactory(_prefab);
             if (_prefab != null && component == null)
-                $"Prefab {_prefab.name} does not have an {component.GetType()} component.".Log(level: ZMethodsDebug.LogLevel.Warning);
+                LogService.Warning(BuiltInLogCategories.ZSystems, $"Prefab {_prefab.name} does not have an {component.GetType()} component.").Log();
         }
 
         /// <summary>

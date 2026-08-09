@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DeadWrongGames.ZUtils;
+using DeadWrongGames.ZServices.Diagnostics;
 using UnityEngine;
 
 namespace DeadWrongGames.ZServices.Time
@@ -35,7 +35,7 @@ namespace DeadWrongGames.ZServices.Time
             foreach (T user in users)
             {
                 try { callback(user); }
-                catch (Exception ex) { ex.Log(level: ZMethodsDebug.LogLevel.Error); }
+                catch (Exception ex) { LogService.Error(BuiltInLogCategories.ZSystems, ex.Message).Log(); }
             }
             
             users.UnionWith(pending);
@@ -50,7 +50,7 @@ namespace DeadWrongGames.ZServices.Time
         {
             if (user is not IUpdatable && user is not ILateUpdatable && user is not IFixedUpdatable)
             {
-                $"{user} does not implement any of the non-base updatable interfaces. Returning.".Log(level: ZMethodsDebug.LogLevel.Warning);
+                LogService.Warning(BuiltInLogCategories.ZSystems, $"{user} does not implement any of the non-base updatable interfaces. Returning.").Log();
                 return;
             }
             

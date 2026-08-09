@@ -21,6 +21,7 @@ namespace DeadWrongGames.ZServices.Diagnostics
         public LoggerConfiguration(IReadOnlyDictionary<LogCategory, LogLevel>? minLogLevelOverridesByCategory = null, IReadOnlyDictionary<LogCategory, IReadOnlyList<ILogSink>>? sinkOverridesByCategory = null)
         {
             // Copy into new dictionaries so we never mutate the caller's input.
+            // Apply overrides for built-in categories only if the caller hasn't already configured them.
             Dictionary<LogCategory, LogLevel> minLevels = (minLogLevelOverridesByCategory != null) ? 
                 new Dictionary<LogCategory, LogLevel>(minLogLevelOverridesByCategory) : 
                 new Dictionary<LogCategory, LogLevel>();
@@ -30,7 +31,7 @@ namespace DeadWrongGames.ZServices.Diagnostics
                 new Dictionary<LogCategory, IReadOnlyList<ILogSink>>(sinkOverridesByCategory) : 
                 new Dictionary<LogCategory, IReadOnlyList<ILogSink>>();
             IReadOnlyList<ILogSink> unhandledExceptionSinks = DefaultSinks.Where(sink => sink is not UnityConsoleSink).ToList().AsReadOnly(); // Unity already logs to the console
-            sinks.TryAdd(BuiltInLogCategories.UnhandledException, unhandledExceptionSinks); // Apply only if the caller hasn't already configured them.
+            sinks.TryAdd(BuiltInLogCategories.UnhandledException, unhandledExceptionSinks);
             SinkOverridesByCategory = sinks;
         }
 

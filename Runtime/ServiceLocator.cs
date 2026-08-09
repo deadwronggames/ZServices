@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DeadWrongGames.ZServices.Diagnostics;
 using DeadWrongGames.ZServices.EventChannel;
 using DeadWrongGames.ZUtils;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace DeadWrongGames.ZServices
         public static void Register<TService>(TService serviceToRegister) where TService : IService
         {
             if (s_serviceDict.TryGetValue(typeof(TService), out IService existingService) && existingService != null)
-                $"An instance of {typeof(TService)} is already registered as a service. Doing nothing.".Log(level: ZMethodsDebug.LogLevel.Warning);
+                LogService.Warning(BuiltInLogCategories.ZSystems, $"An instance of {typeof(TService)} is already registered as a service. Doing nothing.").Log();
             else 
                 s_serviceDict[typeof(TService)] = serviceToRegister;
         }
@@ -37,7 +38,7 @@ namespace DeadWrongGames.ZServices
         {
             if (!s_serviceDict.TryGetValue(typeof(TService), out IService serviceObject) || serviceObject == null)
             {
-                $"{typeof(TService).Name} requested from ServiceLocator but Service is not registered. Returning default.".Log(level: ZMethodsDebug.LogLevel.Warning);
+                LogService.Warning(BuiltInLogCategories.ZSystems, $"{typeof(TService).Name} requested from ServiceLocator but Service is not registered. Returning default.").Log();
                 return default;
             }
             
@@ -53,7 +54,7 @@ namespace DeadWrongGames.ZServices
             
             if (!TryGet(out EventBroadcastService eventService)) // TODO change later to GameManager, that seems less arbitrary
             {
-                "Not ready to create MB yet. Returning null.".Log(level: ZMethodsDebug.LogLevel.Warning);
+                LogService.Warning(BuiltInLogCategories.ZSystems, "Not ready to create MB yet. Returning null.").Log();
                 return null;
             }
             

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using DeadWrongGames.ZConstants;
-using DeadWrongGames.ZUtils;
+using DeadWrongGames.ZServices.Diagnostics;
 using UnityEngine;
 
 namespace DeadWrongGames.ZServices.EventChannel
@@ -29,7 +29,7 @@ namespace DeadWrongGames.ZServices.EventChannel
                 if (eventChannel == null) continue;
 
                 if (!_eventChannelDict.ContainsKey(eventChannel.name)) _eventChannelDict.Add(eventChannel.name, eventChannel);
-                else $"Duplicate EventChannel: {eventChannel.name}. Duplicate not added.".Log(level: ZMethodsDebug.LogLevel.Warning);
+                else LogService.Warning(BuiltInLogCategories.ZSystems, $"Duplicate EventChannel: {eventChannel.name}. Duplicate not added.").Log();
             }
             
             ServiceLocator.Register(this);

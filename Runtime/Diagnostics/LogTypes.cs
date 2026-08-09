@@ -17,7 +17,9 @@ namespace DeadWrongGames.ZServices.Diagnostics
     public static class BuiltInLogCategories
     {
         public static readonly LogCategory General = new("General");
+        public static readonly LogCategory UI = new("UI"); // Used by the ZModularUI package
         public static readonly LogCategory UnhandledException = new("UnhandledException");
+        public static readonly LogCategory ZSystems = new("ZSystems");
     }
 
     public sealed record LogEntry(
